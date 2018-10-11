@@ -28,10 +28,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    public String toQueryUser222(){
+        return "showUser222";
+    }
+
     @RequestMapping("toQueryUser")
     public String toQueryUser(){
         return "showUser";
     }
+
+    public static final String number="1";
     /** <pre>(查询)
 	 * 创建人：史航启
 	 * 创建时间：2018/10/10 18:28
@@ -45,11 +51,6 @@ public class UserController {
     @ResponseBody
     public List<User> queryUser(){
         List<User> userList = userService.queryUser();
-        System.out.println("kjhwefwgfd");
-        System.out.println("kjhwrewegfd");
-        System.out.println("kjhgwerfd");
-        System.out.println("kjhweergfd");
-        System.out.println("kjhwergfd");
         return userList;
     }
 
