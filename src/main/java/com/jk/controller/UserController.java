@@ -45,6 +45,11 @@ public class UserController {
     @ResponseBody
     public List<User> queryUser(){
         List<User> userList = userService.queryUser();
+        System.out.println("kjhwefwgfd");
+        System.out.println("kjhwrewegfd");
+        System.out.println("kjhgwerfd");
+        System.out.println("kjhweergfd");
+        System.out.println("kjhwergfd");
         return userList;
     }
 
