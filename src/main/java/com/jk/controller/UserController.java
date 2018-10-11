@@ -46,6 +46,10 @@ public class UserController {
     public List<User> queryUser(){
         List<User> userList = userService.queryUser();
         System.out.println("kjhgfd");
+        System.out.println("kjhgfd");
+        System.out.println("kjhgfd");
+        System.out.println("kjhgfd");
+        System.out.println("kjhgfd");
         return userList;
     }
 
