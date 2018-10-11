@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <link rel="stylesheet" href="/easyui/themes/icon.css"/>
+    <link rel="stylesheet" href="/easyui/themes/default/easyui.css"/>
+    <link rel="stylesheet" href="/easyui/themes/color.css"/>
+    <script src="/easyui/jquery.min.js"></script>
+    <script src="/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script src="/easyui/jquery.easyui.min.js"></script>
+</head>
+<body  class="easyui-layout" style="padding:5px;left: 0px; top: 4px; ">
+
+<div id="cc" class="easyui-layout" data-options="fit:true">
+    <div data-options="region:'north',title:'',split:true" style="height:100px;">
+        <center><h1>云深不知处</h1></center>
+    </div>
+    <div data-options="region:'west',title:'',split:true" style="width:200px;">
+
+    </div>
+    <div data-options="region:'center',title:''" style="padding:5px;background:#eee;">
+        <div id="tt" class="easyui-tabs" data-options="fit:true">
+           <!-- 姓名:<input type="text" id="nameid"/>-->
+            <table id="usertable"></table>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    /*<![CDATA[*/
+    $( function(){
+        selUser();
+    })
+    function selUser(){
+        $('#usertable').datagrid({
+
+            url:'/user/queryUser',
+
+            pagination:true,
+            pageNumber:1,
+            pageSize:5,
+            pageList:[5,10,15,20],
+            queryParams:{
+                /* dunit:$("[name='dunits']:checked").val() */
+               // userName:$('#nameid').val(),
+            },
+            columns:[
+                {field:'id',title:'编号',width:100,align:'center'},
+                {field:'name',title:'姓名',width:100,align:'center'},
+                {field:'loginNumber',title:'账号',width:100,align:'center'},
+                {field:'password',title:'密码',width:100,align:'center'},
+                {field:'roleId',title:'角色',width:100,align:'center'}
+            ],
+
+            toolbar:[
+                {
+                    text:"删除",
+                    iconCls: 'icon-remove',
+                    handler: function(){
+                        todelete();
+                    }
+                },"-",
+                {
+                    text:"新增",
+                    iconCls: 'icon-add',
+                    handler: function(){
+                        //新增弹框
+                        adduser();
+                    }
+                },"-",
+                {
+                    text:"修改",
+                    iconCls: 'icon-edit',
+                    handler: function(){
+                        //修改信息
+                        edituser();
+                    }
+                },"-",
+                {
+                    text:"搜索",
+                    iconCls: 'icon-search',
+                    handler: function(){
+                        selUser();
+                    }
+                }],
+        });
+    }
+    //-----------------------------增加
+    function adduser(){
+        var add =$("<div></div>").dialog({
+            title: '新增学生信息',
+            width: 400,
+            height: 300,
+            href: '/user/toAddUserInfo',
+            modal: true,
+            buttons:[{
+                text:'保存',
+                iconCls:'icon-save',
+                plain:true,
+                handler:function(){
+                    //ajax调用后台进行信息的保存
+                    $.ajax({
+                        url:"/user/addUser",
+                        data:$("#addform").serialize(),
+                        type:"post",
+                        success:function(data) {
+                            if(data){
+                                $.messager.alert('好消息','新增成功！','question');
+                                $("#usertable").datagrid("reload");
+                                add.dialog("close");
+                            }else{
+                                $.messager.alert('坏消息','新增失败！','error');
+                            }
+                        }
+                    });
+                }
+            },{
+                text:'关闭',
+                iconCls: 'icon-cancel',
+                plain:true,
+                handler:function(){
+                    add.dialog("close");
+                }
+            }]
+
+        })
+    }
+    //-----------------------------------修改
+    function edituser(){
+        var  data = $("#usertable").datagrid("getSelected");
+        if (null == data) {
+            alert("请至少选中一条");
+        } else {
+            var upd =$("<div></div>").dialog({
+                title: '修改图书信息',
+                width: 400,
+                height: 300,
+                href: "/user/queryUserById?id=" + data.id ,
+                modal: true,
+                buttons:[{
+                    text:'保存',
+                    iconCls:'icon-save',
+                    plain:true,
+                    handler:function(){
+                        //ajax调用后台进行的保存
+                        $.ajax({
+                            url:"/user/updateUser",
+                            data:$("#editform").serialize(),
+                            type:"post",
+                            success:function(data) {
+                                if(data){
+                                    $.messager.alert('好消息','修改成功！','question');
+                                    $("#usertable").datagrid("reload");
+                                    upd.dialog("close");
+                                }else{
+                                    $.messager.alert('坏消息','修改失败！','error');
+                                }
+                            }
+                        });
+                    }
+                },{
+                    text:'关闭',
+                    iconCls: 'icon-cancel',
+                    plain:true,
+                    handler:function(){
+                        upd.dialog("close");
+                    }
+                }]
+
+            })
+        }
+    }
+    //------------------------------删除
+    function todelete(){
+
+        var selectRows = $("#usertable").datagrid("getSelections")
+        if(selectRows.length<1){
+            alert("请选择要删除的条数")
+            return;
+        }
+        var ids = "";
+        for (var i = 0; i < selectRows.length; i++) {
+            ids += "," + selectRows[i].id
+        }
+        ids = ids.substr(1)
+        if(confirm("你确定要删除编号为"+ids+"的这几条数据吗")){
+            $.ajax({
+                url:"/user/deleteUser",
+                data:{'ids':ids},
+                success:function(data){
+                    if(data){
+                        $.messager.alert('好消息','删除成功！','question');
+                        selUser();
+                    }else{
+                        $.messager.alert('坏消息','删除失败！','error');
+                    }
+                }
+            })
+
+        }
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

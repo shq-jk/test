@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+</head>
+<body>
+<form id="editform">
+	<input type="hidden" name="id" th:value="${user.id}"/>
+	<table border="1">
+		<tr>
+			<th>姓名</th>
+			<th><input type="text" name="name" th:value="${user.name}"/></th>
+		</tr>
+		<tr>
+			<th>账号</th>
+			<th><input type="text" name="loginNumber" th:value="${user.loginNumber}"/></th>
+		</tr>
+		<tr>
+			<th>密码</th>
+			<th><input type="text" name="password" th:value="${user.password}"/></th>
+		</tr>
+	</table>
+</form>
+
+</body>
+</html>
